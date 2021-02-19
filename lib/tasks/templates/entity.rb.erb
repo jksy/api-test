@@ -1,0 +1,9 @@
+module V1
+  module Entities
+    class <%= entity_name %> < Grape::Entity
+% columns.each do |column|
+      # expose :<%= column[:name] %>, documentation: { type: '<%= column[:type] %>', desc: '<%= column[:comment].to_s %>', example: '<%= column[:example] %>' }
+% end
+    end
+  end
+end
