@@ -12,6 +12,7 @@ namespace :grape_generator do
         next
       end
       generate_entity model
+      generate_api model
     end
   end
 
@@ -22,7 +23,7 @@ namespace :grape_generator do
     end
 
     def generate
-      puts "generating.... #{@model}"
+      puts "generating entity.... #{@model}"
       erb = ERB.new(File.read(@template), trim_mode: '%-')
       result = erb.result(binding)
       File.write(output_path, result)
@@ -68,12 +69,50 @@ namespace :grape_generator do
     end
   end
 
+  class ApiGenerator
+    def initialize model
+      @model = model
+      @template = "#{File.join(File.dirname(__FILE__), 'templates', 'api.rb.erb')}"
+    end
+
+    def generate
+      puts "generating api.... #{@model}"
+      erb = ERB.new(File.read(@template), trim_mode: '%-')
+      result = erb.result(binding)
+      File.write(output_path, result)
+      puts "done"
+    end
+
+    def api_name
+      @model.to_s.camelize
+    end
+    alias entity_name api_name
+
+    def resources_name
+      @model.to_s.pluralize
+    end
+
+    def model_name
+      @model.class.to_s
+    end
+
+    def output_path
+      path = "#{Rails.root}/app/api/v1/#{@model.to_s.downcase}.rb"
+      FileUtils.mkdir_p File.dirname(path)
+      path
+    end
+  end
+
   def guess_model_from table_name
     table_name.singularize.camelcase
   end
 
   def generate_entity model
     generator = EntityGenerator.new model
+    generator.generate
+  end
+  def generate_api model
+    generator = ApiGenerator.new model
     generator.generate
   end
 end

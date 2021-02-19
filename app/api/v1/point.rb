@@ -1,13 +1,13 @@
 module V1
-  class <%= api_name %> < Grape::API
+  class Point < Grape::API
     # format :json
     # version 'v1'
 
-    resources :<%= resources_name %> do
-      desc '<%= api_name %>を返す' do
+    resources :Points do
+      desc 'Pointを返す' do
         # failure [[401, 'Unauthorized', Entities::Errors::Error]]
         named 'named route'
-        success Entities::<%= entity_name %>
+        success Entities::Point
 
         headers 'X-AuthToken': {
                   description: 'Validates your identity',
@@ -31,8 +31,8 @@ module V1
         optional :array_param, type: Array[Integer], desc: 'description for array_param'
       end
       get do
-        ::<%= model_name %>.all
-        # represent ::<%= model_name %>.all, with: Entities::User もし型指定したいなら
+        ::Class.all
+        # represent ::Class.all, with: Entities::User もし型指定したいなら
       end
     end
   end
