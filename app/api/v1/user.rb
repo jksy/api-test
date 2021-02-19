@@ -4,10 +4,6 @@ module V1
     version 'v1'
 
     resources :users do
-      class Params < Grape::Entity
-        expose :id, documentation: { type: Integer, desc: 'id of user', example: 1234 }
-      end
-
       desc 'ユーザを返す' do
         failure [[401, 'Unauthorized', Entities::Errors::Error]]
         named 'My named route'
